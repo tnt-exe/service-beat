@@ -42,5 +42,5 @@ jobs:
         with:
           app-name: 'service-beat'
           slot-name: 'Production'
-          package: .
+          package: ${{ env.DOTNET_ROOT }}/service-beat
           
