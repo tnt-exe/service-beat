@@ -2,8 +2,10 @@
   "Hangfire": {
     "Title": "Hangfire Dashboard",
     "User": "user",
-    "Pass": "pass",
-    "Redis": "redis connection string",
+    "Pass": "pass"
+  },
+  "ConnectionStrings": {
+    "DB_STORE": "connection string",
   },
   "Api": "https://api.example.com",
 }

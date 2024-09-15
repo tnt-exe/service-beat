@@ -1,5 +1,5 @@
 using Hangfire;
-using Hangfire.Redis.StackExchange;
+using Hangfire.PostgreSql;
 using HangfireBasicAuthenticationFilter;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,13 +8,17 @@ var apiUrl = builder.Configuration["Api"];
 var hangfireTitle = builder.Configuration["Hangfire:Title"];
 var hangfireUser = builder.Configuration["Hangfire:User"];
 var hangfirePass = builder.Configuration["Hangfire:Pass"];
-var hangfireRedis = builder.Configuration["Hangfire:Redis"];
+var dbStore = builder.Configuration.GetConnectionString("DB_STORE");
 
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddHangfire(config =>
 {
-    config.UseRedisStorage(hangfireRedis);
+    config.UsePostgreSqlStorage(c => c.UseNpgsqlConnection(dbStore),
+        new PostgreSqlStorageOptions
+        {
+            JobExpirationCheckInterval = TimeSpan.FromDays(7)
+        });
 });
 
 builder.Services.AddHangfireServer();
