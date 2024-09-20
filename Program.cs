@@ -1,6 +1,7 @@
 using Hangfire;
 using Hangfire.PostgreSql;
 using HangfireBasicAuthenticationFilter;
+using ServiceBeat;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,8 @@ builder.Services.AddHangfire(config =>
         });
 });
 
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<PingService>();
 builder.Services.AddHangfireServer();
 
 var app = builder.Build();
@@ -42,9 +45,9 @@ app.UseHangfireDashboard("/hangfire", new DashboardOptions
     ]
 });
 
-RecurringJob.AddOrUpdate(
+RecurringJob.AddOrUpdate<PingService>(
     "Run every 10 minutes",
-    () => new HttpClient().GetAsync(apiUrl),
+    service => service.PingAsync(apiUrl!),
     "*/10 * * * *"
 );
 
